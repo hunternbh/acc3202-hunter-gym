@@ -1,0 +1,896 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ACC3202 • create_member (3-step mini assignment)</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --panel:#0f1a2e;
+      --panel2:#0c1628;
+      --text:#e8eefc;
+      --muted:#a9b7d6;
+      --border:rgba(255,255,255,.10);
+      --accent:#7aa2ff;
+      --good:#2ee59d;
+      --bad:#ff5c7a;
+      --warn:#ffcc66;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      background: radial-gradient(1200px 600px at 10% 0%, rgba(122,162,255,.20), transparent 60%),
+                  radial-gradient(1200px 600px at 90% 10%, rgba(46,229,157,.12), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      line-height:1.35;
+    }
+    .wrap{
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 28px 18px 64px;
+    }
+    header{
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+      justify-content:space-between;
+      margin-bottom: 18px;
+    }
+    .title{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    .badge{
+      width:46px;height:46px;border-radius:14px;
+      background: linear-gradient(135deg, rgba(122,162,255,.95), rgba(46,229,157,.65));
+      display:grid;place-items:center;
+      box-shadow: var(--shadow);
+      flex: 0 0 auto;
+      font-weight:800;
+      color:#061022;
+      letter-spacing:.5px;
+    }
+    h1{
+      margin:0;
+      font-size: 20px;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      margin-top:4px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .toolbar{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      padding-top: 2px;
+    }
+    button{
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor:pointer;
+      transition: transform .08s ease, background .2s ease, border-color .2s ease;
+      font-weight:600;
+      font-size: 13px;
+      display:flex;
+      gap:8px;
+      align-items:center;
+      user-select:none;
+    }
+    button:hover{ background: rgba(255,255,255,.10); border-color: rgba(255,255,255,.18); }
+    button:active{ transform: translateY(1px); }
+    button.primary{
+      background: rgba(122,162,255,.18);
+      border-color: rgba(122,162,255,.35);
+    }
+    button.primary:hover{
+      background: rgba(122,162,255,.25);
+      border-color: rgba(122,162,255,.45);
+    }
+    button.good{
+      background: rgba(46,229,157,.16);
+      border-color: rgba(46,229,157,.38);
+    }
+    button.good:hover{
+      background: rgba(46,229,157,.22);
+      border-color: rgba(46,229,157,.48);
+    }
+    button.danger{
+      background: rgba(255,92,122,.14);
+      border-color: rgba(255,92,122,.35);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+    @media (max-width: 980px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card .head{
+      padding: 14px 16px;
+      background: rgba(0,0,0,.18);
+      border-bottom: 1px solid var(--border);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+    }
+    .card .head h2{
+      margin:0;
+      font-size: 14px;
+      letter-spacing:.3px;
+      text-transform: uppercase;
+      color: rgba(232,238,252,.90);
+    }
+    .pill{
+      font-size: 12px;
+      color: var(--muted);
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      white-space:nowrap;
+    }
+    .card .body{
+      padding: 14px 16px 16px;
+    }
+
+    .hint{
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0 0 12px;
+    }
+
+    .codebox{
+      background: rgba(0,0,0,.28);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 12px;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      line-height: 1.45;
+      overflow:auto;
+      color: rgba(232,238,252,.92);
+      margin: 10px 0 12px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.02);
+    }
+
+    .q{
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 14px 12px;
+      margin-bottom: 12px;
+      background: rgba(0,0,0,.12);
+    }
+    .q:last-child{ margin-bottom:0; }
+    .q .qtitle{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom: 10px;
+    }
+    .q h3{
+      margin:0;
+      font-size: 15px;
+      letter-spacing: .1px;
+    }
+    .q .tag{
+      font-size: 12px;
+      color: rgba(232,238,252,.85);
+      background: rgba(122,162,255,.16);
+      border: 1px solid rgba(122,162,255,.32);
+      border-radius: 999px;
+      padding: 5px 10px;
+      white-space:nowrap;
+    }
+    .q p{
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 760px){
+      .row{ grid-template-columns: 1fr; }
+    }
+
+    label{
+      display:block;
+      font-size: 12px;
+      color: rgba(232,238,252,.86);
+      margin: 0 0 6px;
+      letter-spacing:.2px;
+    }
+    textarea, input[type="text"]{
+      width:100%;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      padding: 11px 12px;
+      font-size: 13px;
+      outline:none;
+      transition: border-color .2s ease, background .2s ease;
+    }
+    textarea{
+      min-height: 104px;
+      resize: vertical;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+    textarea:focus, input[type="text"]:focus{
+      border-color: rgba(122,162,255,.55);
+      background: rgba(255,255,255,.07);
+    }
+
+    .feedback{
+      margin-top: 10px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      padding: 10px 12px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .feedback.good{ border-color: rgba(46,229,157,.40); background: rgba(46,229,157,.08); color: rgba(46,229,157,.95); }
+    .feedback.bad{ border-color: rgba(255,92,122,.42); background: rgba(255,92,122,.08); color: rgba(255,92,122,.95); }
+    .feedback.warn{ border-color: rgba(255,204,102,.42); background: rgba(255,204,102,.08); color: rgba(255,204,102,.95); }
+
+    .side{
+      display:flex;
+      flex-direction:column;
+      gap: 14px;
+    }
+
+    .kv{
+      display:grid;
+      grid-template-columns: 120px 1fr;
+      gap: 8px 10px;
+      align-items:start;
+      margin-top: 10px;
+    }
+    .k{
+      color: rgba(232,238,252,.86);
+      font-size: 12px;
+      padding-top: 6px;
+    }
+    .v{
+      font-family: var(--mono);
+      font-size: 12.5px;
+      background: rgba(0,0,0,.20);
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      border-radius: 12px;
+      overflow:auto;
+      white-space:pre;
+      line-height: 1.4;
+    }
+
+    .mini{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-top: 10px;
+    }
+    .mini .stat{
+      font-size: 12px;
+      color: var(--muted);
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+    }
+
+    .footer{
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align:center;
+      opacity:.9;
+    }
+
+    .divider{
+      height: 1px;
+      background: var(--border);
+      margin: 12px 0;
+    }
+
+    .ghost{
+      opacity:.85;
+    }
+    .checkline{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <div class="badge">AI</div>
+        <div>
+          <h1>create_member • 3-step mini assignment</h1>
+          <div class="subtitle">Focus: state dictionary, ID counter increment, and what key-value pairs should store.</div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <button class="primary" id="btnCheckAll">✅ Check all</button>
+        <button class="good" id="btnShowHints">💡 Show hints</button>
+        <button class="danger" id="btnReset">↺ Reset</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- LEFT: QUESTIONS -->
+      <div class="card">
+        <div class="head">
+          <h2>Questions</h2>
+          <div class="pill">3 tasks • submit code-ish answers</div>
+        </div>
+        <div class="body">
+          <p class="hint">
+            Assume the program keeps all data in a Python dictionary called <span class="ghost" style="font-family:var(--mono)">state</span>.
+            You are not writing the full function yet—just the pieces that make it work.
+          </p>
+
+          <div class="codebox" id="stateStarter"></div>
+
+          <!-- Q1 -->
+          <section class="q" id="q1">
+            <div class="qtitle">
+              <h3>Q1. Explain the <span style="font-family:var(--mono)">state</span> dictionary structure</h3>
+              <span class="tag">State + dictionaries</span>
+            </div>
+            <p>
+              For each key, explain (1) what it stores, (2) why it’s useful.
+              Keep it short but specific.
+            </p>
+
+            <div class="row">
+              <div>
+                <label for="q1_members">What does <span style="font-family:var(--mono)">state["members"]</span> store?</label>
+                <textarea id="q1_members" placeholder='Example: A dict mapping member_id -> member record (name/email/created_at)'></textarea>
+              </div>
+              <div>
+                <label for="q1_email_index">What does <span style="font-family:var(--mono)">state["email_index"]</span> store?</label>
+                <textarea id="q1_email_index" placeholder='Example: A dict mapping email -> member_id to enforce uniqueness quickly'></textarea>
+              </div>
+            </div>
+
+            <div style="margin-top:10px;">
+              <label for="q1_next_num">What does <span style="font-family:var(--mono)">state["next_member_num"]</span> store?</label>
+              <textarea id="q1_next_num" placeholder='Example: The next number to use when generating an ID like MBR-1001'></textarea>
+            </div>
+
+            <div class="checkline">
+              <button id="btnCheckQ1">Check Q1</button>
+              <span class="pill" id="scoreQ1">Not checked</span>
+            </div>
+            <div class="feedback" id="fbQ1" style="display:none;"></div>
+          </section>
+
+          <!-- Q2 -->
+          <section class="q" id="q2">
+            <div class="qtitle">
+              <h3>Q2. Build and store a member record in <span style="font-family:var(--mono)">state["members"]</span></h3>
+              <span class="tag">Key-value pairs</span>
+            </div>
+            <p>
+              Using the values below, write a Python dictionary named <span style="font-family:var(--mono)">member</span>.
+              Then write the line that stores it into <span style="font-family:var(--mono)">state["members"]</span> using <span style="font-family:var(--mono)">member_id</span> as the key.
+            </p>
+
+            <div class="codebox" id="memberInputs"></div>
+
+            <label for="q2_member_dict">Write the <span style="font-family:var(--mono)">member = { ... }</span> dictionary</label>
+            <textarea id="q2_member_dict" placeholder='member = {
+  "member_id": member_id,
+  "name": name,
+  "email": email,
+  "created_at": created_at
+}'></textarea>
+
+            <div style="margin-top:10px;">
+              <label for="q2_store_line">Write the line that stores it in <span style="font-family:var(--mono)">state["members"]</span></label>
+              <input type="text" id="q2_store_line" placeholder='state["members"][member_id] = member' />
+            </div>
+
+            <div class="checkline">
+              <button id="btnCheckQ2">Check Q2</button>
+              <span class="pill" id="scoreQ2">Not checked</span>
+            </div>
+            <div class="feedback" id="fbQ2" style="display:none;"></div>
+          </section>
+
+          <!-- Q3 -->
+          <section class="q" id="q3">
+            <div class="qtitle">
+              <h3>Q3. Update the state after creating a member</h3>
+              <span class="tag">Index + increment</span>
+            </div>
+            <p>
+              Write one line for each:
+              (1) store email → member_id in <span style="font-family:var(--mono)">state["email_index"]</span>,
+              (2) increment <span style="font-family:var(--mono)">state["next_member_num"]</span>.
+            </p>
+
+            <div class="row">
+              <div>
+                <label for="q3_index_line">Line to update <span style="font-family:var(--mono)">email_index</span></label>
+                <input type="text" id="q3_index_line" placeholder='state["email_index"][email] = member_id' />
+              </div>
+              <div>
+                <label for="q3_increment_line">Line to increment <span style="font-family:var(--mono)">next_member_num</span></label>
+                <input type="text" id="q3_increment_line" placeholder='state["next_member_num"] += 1' />
+              </div>
+            </div>
+
+            <div class="checkline">
+              <button id="btnCheckQ3">Check Q3</button>
+              <span class="pill" id="scoreQ3">Not checked</span>
+            </div>
+            <div class="feedback" id="fbQ3" style="display:none;"></div>
+          </section>
+        </div>
+      </div>
+
+      <!-- RIGHT: STATE + LIVE PREVIEW -->
+      <div class="side">
+        <div class="card">
+          <div class="head">
+            <h2>Live state preview</h2>
+            <div class="pill">Simulated • for learning</div>
+          </div>
+          <div class="body">
+            <p class="hint">
+              This panel shows what the <span style="font-family:var(--mono)">state</span> would look like
+              if your Q2/Q3 code were applied (best-effort simulation).
+            </p>
+
+            <div class="mini">
+              <span class="stat" id="statMembers">members: 0</span>
+              <span class="stat" id="statIndex">email_index: 0</span>
+              <span class="stat" id="statNext">next_member_num: 1001</span>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="kv">
+              <div class="k">state</div>
+              <div class="v" id="stateView">{}</div>
+
+              <div class="k">members</div>
+              <div class="v" id="membersView">{}</div>
+
+              <div class="k">email_index</div>
+              <div class="v" id="indexView">{}</div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="mini">
+              <button class="primary" id="btnApply">▶ Apply Q2+Q3 to preview</button>
+              <button id="btnUndo">↩ Undo last apply</button>
+            </div>
+
+            <div class="feedback warn" id="fbApply" style="display:none;"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="head">
+            <h2>Hints</h2>
+            <div class="pill" id="hintStatus">Hidden</div>
+          </div>
+          <div class="body" id="hints" style="display:none;">
+            <div class="codebox">
+Key ideas:
+
+• state["members"]: use member_id as the KEY so you can look up a member fast.
+  value should be a "member record" dict containing fields (member_id, name, email, created_at).
+
+• state["email_index"]: use email as the KEY to enforce uniqueness quickly.
+  value should be the member_id (like an index/unique constraint).
+
+• state["next_member_num"]: integer counter for ID generation.
+  after creating a member, increment it so the next member gets a new ID.
+
+Common correct lines:
+
+state["members"][member_id] = member
+state["email_index"][email] = member_id
+state["next_member_num"] += 1
+            </div>
+          </div>
+          <div class="body" id="hintsHidden">
+            <p class="hint">Click “Show hints” if you want guidance (or keep them hidden for assessment).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Tip: Students can paste their answers into the LMS after checking correctness here.
+    </div>
+  </div>
+
+  <script>
+    // ---------- Seed data (fixed for the mini assignment) ----------
+    const starterState = {
+      members: {},
+      email_index: {},
+      next_member_num: 1001
+    };
+
+    const exampleMember = {
+      name: "Alice Tan",
+      email: "alice@example.com",
+      created_at: "2026-02-01",
+      member_id: "MBR-1001"
+    };
+
+    // For undo
+    let previewState = deepClone(starterState);
+    let history = [];
+
+    // ---------- DOM ----------
+    const el = (id) => document.getElementById(id);
+
+    const stateStarter = el("stateStarter");
+    const memberInputs = el("memberInputs");
+
+    const stateView = el("stateView");
+    const membersView = el("membersView");
+    const indexView = el("indexView");
+
+    const statMembers = el("statMembers");
+    const statIndex = el("statIndex");
+    const statNext = el("statNext");
+
+    const fbQ1 = el("fbQ1");
+    const fbQ2 = el("fbQ2");
+    const fbQ3 = el("fbQ3");
+    const fbApply = el("fbApply");
+
+    const scoreQ1 = el("scoreQ1");
+    const scoreQ2 = el("scoreQ2");
+    const scoreQ3 = el("scoreQ3");
+
+    // ---------- Render initial codeboxes ----------
+    stateStarter.textContent =
+`state = {
+  "members": {},
+  "email_index": {},
+  "next_member_num": 1001
+}`;
+
+    memberInputs.textContent =
+`Given:
+name = "${exampleMember.name}"
+email = "${exampleMember.email}"
+created_at = "${exampleMember.created_at}"
+member_id = "${exampleMember.member_id}"`;
+
+    // ---------- Utilities ----------
+    function deepClone(obj){
+      return JSON.parse(JSON.stringify(obj));
+    }
+
+    function pretty(obj){
+      return JSON.stringify(obj, null, 2);
+    }
+
+    function norm(s){
+      return (s || "")
+        .toLowerCase()
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function showFeedback(node, kind, msg){
+      node.classList.remove("good","bad","warn");
+      node.classList.add(kind);
+      node.style.display = "block";
+      node.textContent = msg;
+    }
+
+    function hideFeedback(node){
+      node.style.display = "none";
+      node.textContent = "";
+      node.classList.remove("good","bad","warn");
+    }
+
+    function updatePreview(){
+      stateView.textContent = pretty(previewState);
+      membersView.textContent = pretty(previewState.members);
+      indexView.textContent = pretty(previewState.email_index);
+
+      statMembers.textContent = `members: ${Object.keys(previewState.members).length}`;
+      statIndex.textContent = `email_index: ${Object.keys(previewState.email_index).length}`;
+      statNext.textContent = `next_member_num: ${previewState.next_member_num}`;
+    }
+
+    // ---------- Checkers ----------
+    function checkQ1(){
+      hideFeedback(fbQ1);
+      const aMembers = norm(el("q1_members").value);
+      const aIndex = norm(el("q1_email_index").value);
+      const aNext = norm(el("q1_next_num").value);
+
+      let points = 0;
+      let notes = [];
+
+      // members: should mention mapping/dict, member_id, record/fields
+      const okMembers =
+        aMembers.includes("dict") || aMembers.includes("dictionary") || aMembers.includes("mapping");
+      const okMembersKey =
+        aMembers.includes("member_id") || aMembers.includes("id") || aMembers.includes("mbr");
+      const okMembersVal =
+        aMembers.includes("record") || aMembers.includes("name") || aMembers.includes("email") || aMembers.includes("created");
+      if (okMembers && okMembersKey && okMembersVal) points += 1;
+      else notes.push(`state["members"] should be a dict mapping member_id -> member record (name/email/created_at).`);
+
+      // email_index: should mention email->member_id uniqueness/fast lookup
+      const okIndexMap =
+        (aIndex.includes("email") && (aIndex.includes("member_id") || aIndex.includes("id") || aIndex.includes("mbr")));
+      const okUnique =
+        aIndex.includes("unique") || aIndex.includes("duplicate") || aIndex.includes("prevent") || aIndex.includes("constraint") || aIndex.includes("enforce");
+      if (okIndexMap && okUnique) points += 1;
+      else notes.push(`state["email_index"] should map email -> member_id and help enforce unique emails.`);
+
+      // next_member_num: should mention counter/integer/next number and increment
+      const okNextType =
+        aNext.includes("int") || aNext.includes("integer") || aNext.includes("number") || aNext.includes("counter");
+      const okNextPurpose =
+        aNext.includes("next") || aNext.includes("generate") || aNext.includes("id") || aNext.includes("increment");
+      if (okNextType && okNextPurpose) points += 1;
+      else notes.push(`state["next_member_num"] should be an integer counter used to generate the next member ID, then incremented.`);
+
+      scoreQ1.textContent = `${points}/3`;
+      if (points === 3){
+        showFeedback(fbQ1, "good", "Nice — your explanations match how the state is used in create_member.");
+      } else if (points === 2){
+        showFeedback(fbQ1, "warn", "Almost there. Fix the missing piece:\n- " + notes.join("\n- "));
+      } else {
+        showFeedback(fbQ1, "bad", "Needs work. Key ideas to include:\n- " + notes.join("\n- "));
+      }
+      return points;
+    }
+
+    function checkQ2(){
+      hideFeedback(fbQ2);
+      const dictText = el("q2_member_dict").value.trim();
+      const storeLine = el("q2_store_line").value.trim();
+
+      let points = 0;
+      let notes = [];
+
+      // Check member dict contains required keys
+      const hasMemberId = /["']member_id["']\s*:/.test(dictText) || dictText.includes("member_id");
+      const hasName = /["']name["']\s*:/.test(dictText) || dictText.includes('"name"') || dictText.includes("'name'");
+      const hasEmail = /["']email["']\s*:/.test(dictText) || dictText.includes('"email"') || dictText.includes("'email'");
+      const hasCreated = /["']created_at["']\s*:/.test(dictText) || dictText.includes("created_at");
+
+      const usesVars = dictText.includes("member_id") && dictText.includes("name") && dictText.includes("email") && dictText.includes("created_at");
+      const likelyDict = dictText.includes("{") && dictText.includes("}");
+
+      if (likelyDict && hasMemberId && hasName && hasEmail && hasCreated && usesVars) points += 1;
+      else notes.push(`Your member dict should include keys: member_id, name, email, created_at (using the variables).`);
+
+      // Check store line
+      const normStore = storeLine.replace(/\s+/g,"");
+      const okStore =
+        normStore === `state["members"][member_id]=member`.replace(/\s+/g,"") ||
+        normStore === `state['members'][member_id]=member`.replace(/\s+/g,"") ||
+        /state\[\s*["']members["']\s*\]\[\s*member_id\s*\]\s*=\s*member/.test(storeLine);
+
+      if (okStore) points += 1;
+      else notes.push(`Store line should look like: state["members"][member_id] = member`);
+
+      scoreQ2.textContent = `${points}/2`;
+      if (points === 2){
+        showFeedback(fbQ2, "good", "Perfect — you created a complete member record and stored it under the correct key.");
+      } else if (points === 1){
+        showFeedback(fbQ2, "warn", "Half right. Fix:\n- " + notes.join("\n- "));
+      } else {
+        showFeedback(fbQ2, "bad", "Not quite. Required fixes:\n- " + notes.join("\n- "));
+      }
+      return points;
+    }
+
+    function checkQ3(){
+      hideFeedback(fbQ3);
+      const indexLine = el("q3_index_line").value.trim();
+      const incLine = el("q3_increment_line").value.trim();
+
+      let points = 0;
+      let notes = [];
+
+      const okIndex =
+        /state\[\s*["']email_index["']\s*\]\[\s*email\s*\]\s*=\s*member_id/.test(indexLine) ||
+        indexLine.replace(/\s+/g,"") === `state["email_index"][email]=member_id` ||
+        indexLine.replace(/\s+/g,"") === `state['email_index'][email]=member_id`;
+
+      if (okIndex) points += 1;
+      else notes.push(`Email index line should be: state["email_index"][email] = member_id`);
+
+      const okInc =
+        /state\[\s*["']next_member_num["']\s*\]\s*\+\=\s*1/.test(incLine) ||
+        incLine.replace(/\s+/g,"") === `state["next_member_num"]+=1` ||
+        incLine.replace(/\s+/g,"") === `state['next_member_num']+=1` ||
+        /state\[\s*["']next_member_num["']\s*\]\s*=\s*state\[\s*["']next_member_num["']\s*\]\s*\+\s*1/.test(incLine);
+
+      if (okInc) points += 1;
+      else notes.push(`Increment line should be: state["next_member_num"] += 1`);
+
+      scoreQ3.textContent = `${points}/2`;
+      if (points === 2){
+        showFeedback(fbQ3, "good", "Yep — that’s the index update + counter increment create_member needs.");
+      } else if (points === 1){
+        showFeedback(fbQ3, "warn", "One line is off. Fix:\n- " + notes.join("\n- "));
+      } else {
+        showFeedback(fbQ3, "bad", "Both lines need adjustment:\n- " + notes.join("\n- "));
+      }
+      return points;
+    }
+
+    // ---------- Apply to preview (best-effort simulation) ----------
+    function applyToPreview(){
+      hideFeedback(fbApply);
+
+      // Basic validation: Q2 & Q3 must be reasonably correct
+      const q2 = checkQ2();
+      const q3 = checkQ3();
+
+      if (q2 < 2 || q3 < 2){
+        showFeedback(
+          fbApply,
+          "warn",
+          "Preview not applied. Fix Q2 and Q3 first so we can simulate the state update safely."
+        );
+        return;
+      }
+
+      // Save history for undo
+      history.push(deepClone(previewState));
+
+      // Apply changes
+      const { member_id, name, email, created_at } = exampleMember;
+
+      // Create member record from the expected shape (we don't execute user code)
+      const member = { member_id, name, email, created_at };
+
+      // Email uniqueness check (like the real function)
+      if (previewState.email_index[email]){
+        showFeedback(
+          fbApply,
+          "bad",
+          `Email already exists in preview: ${email} (cannot create duplicate). Use Reset or Undo.`
+        );
+        return;
+      }
+
+      previewState.members[member_id] = member;
+      previewState.email_index[email] = member_id;
+      previewState.next_member_num += 1;
+
+      updatePreview();
+      showFeedback(fbApply, "good", "Applied! Preview state updated as if create_member ran successfully.");
+    }
+
+    function undoApply(){
+      hideFeedback(fbApply);
+      if (history.length === 0){
+        showFeedback(fbApply, "warn", "Nothing to undo yet.");
+        return;
+      }
+      previewState = history.pop();
+      updatePreview();
+      showFeedback(fbApply, "good", "Undid the last apply.");
+    }
+
+    // ---------- Reset ----------
+    function resetAll(){
+      // Inputs
+      ["q1_members","q1_email_index","q1_next_num","q2_member_dict","q2_store_line","q3_index_line","q3_increment_line"]
+        .forEach(id => el(id).value = "");
+
+      // Feedback
+      [fbQ1, fbQ2, fbQ3, fbApply].forEach(hideFeedback);
+
+      scoreQ1.textContent = "Not checked";
+      scoreQ2.textContent = "Not checked";
+      scoreQ3.textContent = "Not checked";
+
+      // Preview
+      previewState = deepClone(starterState);
+      history = [];
+      updatePreview();
+
+      // Hints
+      el("hints").style.display = "none";
+      el("hintsHidden").style.display = "block";
+      el("hintStatus").textContent = "Hidden";
+    }
+
+    // ---------- Hints toggle ----------
+    function toggleHints(forceShow){
+      const hints = el("hints");
+      const hidden = el("hintsHidden");
+      const status = el("hintStatus");
+
+      const isHidden = hints.style.display === "none" || hints.style.display === "";
+      const show = (forceShow === true) ? true : (forceShow === false ? false : isHidden);
+
+      hints.style.display = show ? "block" : "none";
+      hidden.style.display = show ? "none" : "block";
+      status.textContent = show ? "Visible" : "Hidden";
+    }
+
+    // ---------- Wire up buttons ----------
+    el("btnCheckQ1").addEventListener("click", checkQ1);
+    el("btnCheckQ2").addEventListener("click", checkQ2);
+    el("btnCheckQ3").addEventListener("click", checkQ3);
+
+    el("btnCheckAll").addEventListener("click", () => {
+      const a = checkQ1();
+      const b = checkQ2();
+      const c = checkQ3();
+      const total = a + b + c;
+      hideFeedback(fbApply);
+      showFeedback(
+        fbApply,
+        total === 7 ? "good" : (total >= 5 ? "warn" : "bad"),
+        `Checked all: ${total}/7. ${total === 7 ? "Ready to submit." : "Review the feedback boxes above."}`
+      );
+      // place apply feedback in sidebar so it’s visible
+      fbApply.scrollIntoView({behavior:"smooth", block:"nearest"});
+    });
+
+    el("btnApply").addEventListener("click", applyToPreview);
+    el("btnUndo").addEventListener("click", undoApply);
+
+    el("btnShowHints").addEventListener("click", () => toggleHints());
+    el("btnReset").addEventListener("click", resetAll);
+
+    // ---------- Init ----------
+    updatePreview();
+    resetAll(); // ensure consistent UI state on load
+  </script>
+</body>
+</html>
