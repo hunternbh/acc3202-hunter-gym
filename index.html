@@ -578,7 +578,24 @@
           "Write create_gym_state(). It should return one dictionary with members, fobs, and next_member_id. The fobs dictionary should contain fob IDs 1 through 10000, with each value starting as None.",
         starter:
 `def create_gym_state():
-    # Return the starting dictionary for Hunter's Gym.
+    '''
+    Hint:
+    Create and return one dictionary named state.
+
+    The dictionary should have three keys:
+    1. "members" should start as an empty dictionary.
+       Later, each key will be a member_id.
+       Each value will be that member's information.
+
+    2. "fobs" should be a dictionary for fobs 1 through 10000.
+       Each fob should start with the value None, meaning unused.
+       Later, a used fob will point to the member_id assigned to it.
+
+    3. "next_member_id" should start at 1.
+       This number will increase each time a new member is created.
+
+    Return the whole state dictionary at the end.
+    '''
     pass`,
         expected:
 `def create_gym_state():
@@ -604,8 +621,36 @@ assert state["fobs"][1] is None and state["fobs"][10000] is None, "Fobs should b
           "Write register_member(state, name, plan_months, start_date, fob_id). It should reject invalid or already-used fobs by returning None. Otherwise, create a member record, store it in state[\"members\"], mark the fob as assigned, increment next_member_id, and return the new member_id.",
         starter:
 `def register_member(state, name, plan_months, start_date, fob_id):
-    # Use add_months(start_date, plan_months) to calculate end_date.
-    # Return None if the fob is invalid or already assigned.
+    '''
+    Hint:
+    This function should change the state dictionary.
+
+    Step 1:
+    Check whether fob_id exists in state["fobs"].
+    If it does not exist, return None.
+
+    Step 2:
+    Check whether the fob is already assigned.
+    If state["fobs"][fob_id] is not None, return None.
+
+    Step 3:
+    Use state["next_member_id"] as the new member_id.
+
+    Step 4:
+    Use add_months(start_date, plan_months) to calculate end_date.
+
+    Step 5:
+    Create a nested member dictionary with member_id, name,
+    plan_months, start_date, end_date, and fob_id.
+
+    Step 6:
+    Store that member dictionary inside state["members"].
+    Then mark the fob as used inside state["fobs"].
+    Then increase state["next_member_id"] by 1.
+
+    Step 7:
+    Return the new member_id.
+    '''
     pass`,
         expected:
 `def register_member(state, name, plan_months, start_date, fob_id):
@@ -650,7 +695,28 @@ assert register_member(state, "Bad Fob", 1, "2026-08-15", 10001) is None, "Rejec
           "Write can_enter(state, fob_id, scan_date). It should return True only when the fob exists, is assigned to a member, and scan_date falls between the member's start_date and end_date. ISO date strings like 2026-08-12 can be compared directly.",
         starter:
 `def can_enter(state, fob_id, scan_date):
-    # Return True or False.
+    '''
+    Hint:
+    This function should return True or False.
+
+    Step 1:
+    If fob_id is not in state["fobs"], return False.
+
+    Step 2:
+    Look up the member_id stored at state["fobs"][fob_id].
+    If the value is None, the fob has not been assigned, so return False.
+
+    Step 3:
+    Use member_id to find the member record in state["members"].
+
+    Step 4:
+    Compare scan_date with the member's start_date and end_date.
+    The member can enter only when:
+    start_date <= scan_date <= end_date
+
+    Because the dates are written as YYYY-MM-DD strings, you can compare
+    them directly with <=.
+    '''
     pass`,
         expected:
 `def can_enter(state, fob_id, scan_date):
@@ -752,7 +818,7 @@ def add_months(start_date, months):
             </div>
           </div>
           <div class="question-actions">
-            <button type="button" data-edit="${index}">Edit</button>
+            <button type="button" data-hint="${index}">Hint</button>
             <button type="button" data-check="${index}">Check</button>
             <span class="status-pill ${passState[question.id] ? "ok" : ""}" id="status-${question.id}">
               ${passState[question.id] ? "Passed" : "Not checked"}
@@ -762,8 +828,8 @@ def add_months(start_date, months):
         questionList.appendChild(section);
       });
 
-      questionList.querySelectorAll("[data-edit]").forEach((button) => {
-        button.addEventListener("click", () => selectQuestion(Number(button.dataset.edit)));
+      questionList.querySelectorAll("[data-hint]").forEach((button) => {
+        button.addEventListener("click", () => selectQuestion(Number(button.dataset.hint)));
       });
       questionList.querySelectorAll("[data-check]").forEach((button) => {
         button.addEventListener("click", async () => {
