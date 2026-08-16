@@ -176,6 +176,7 @@
 
     .toolbar-group,
     .case-box,
+    .function-guide,
     .question-item {
       background: var(--panel-soft);
       border: 1px solid var(--border);
@@ -372,6 +373,40 @@
       line-height: 1.7;
     }
 
+    .function-guide {
+      margin-bottom: 14px;
+      border-color: rgba(45, 212, 191, 0.24);
+      background: rgba(15, 118, 110, 0.12);
+    }
+
+    .function-guide-title {
+      color: var(--text-strong);
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1.5;
+    }
+
+    .function-guide p {
+      margin: 10px 0 0;
+      color: rgba(229, 231, 235, 0.84);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .guide-code {
+      margin-top: 12px;
+      padding: 12px;
+      white-space: pre-wrap;
+      overflow: auto;
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.55;
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: rgba(229, 231, 235, 0.9);
+    }
+
     .expected-box {
       margin-top: 12px;
       padding: 12px;
@@ -556,6 +591,32 @@
             </div>
           </div>
           <div class="pane-body">
+            <div class="function-guide">
+              <div class="exercise-header">
+                <span class="exercise-chip">Guide</span>
+                <div>
+                  <div class="function-guide-title">Before Q1: how is a Python function like Excel?</div>
+                  <p>
+                    A Python function is a reusable mini-process. You give it inputs, it follows steps,
+                    and it can return an output. Excel formulas work the same way: a formula such as
+                    <span class="small-code">=SUM(A1:A5)</span> takes input cells, follows a rule, and returns an answer.
+                  </p>
+                </div>
+              </div>
+              <div class="guide-code">def add_membership_fee(base_fee, tax):
+    total = base_fee + tax
+    return total</div>
+              <p>
+                In this example, <span class="small-code">base_fee</span> and <span class="small-code">tax</span>
+                are inputs, the indented lines are the steps, and <span class="small-code">return total</span>
+                gives back the output. As you work on Q1, think of <span class="small-code">create_gym_state()</span>
+                as a formula that builds the starting workbook for the gym: it creates the dictionaries the rest of the program will use.
+              </p>
+              <p>
+                Guide question: In your own words, how is a Python function similar to an Excel formula?
+                Think about inputs, steps, and outputs.
+              </p>
+            </div>
             <div class="exercise-list" id="questionList"></div>
           </div>
         </aside>
@@ -581,6 +642,11 @@
     '''
     Hint:
     Create and return one dictionary named state.
+
+    Function hint:
+    A function works like an Excel formula with a name. It takes inputs,
+    follows steps, and gives back an output. This function has no outside
+    inputs, but it still returns an output: the starting state dictionary.
 
     The dictionary should have three keys:
     1. "members" should start as an empty dictionary.
